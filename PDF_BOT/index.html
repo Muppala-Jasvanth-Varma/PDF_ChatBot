@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .upload-section, .chat-section {
+      margin-bottom: 20px;
+    }
+    .chat-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 300px;
+      overflow-y: scroll;
+      background: #fafafa;
+    }
+    .chat-input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PDF Chatbot</h1>
+    
+    <!-- PDF Upload Section -->
+    <div class="upload-section">
+      <h2>Upload PDF</h2>
+      <input type="file" id="pdfUpload" accept="application/pdf">
+      <button id="uploadBtn">Process PDF</button>
+      <p id="uploadStatus"></p>
+    </div>
+    
+    <!-- Chat Interface Section -->
+    <div class="chat-section">
+      <h2>Chat</h2>
+      <div class="chat-box" id="chatBox"></div>
+      <input type="text" id="chatInput" class="chat-input" placeholder="Enter your question...">
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Handle PDF upload and display status
+    document.getElementById('uploadBtn').addEventListener('click', function() {
+      const fileInput = document.getElementById('pdfUpload');
+      if (fileInput.files.length === 0) {
+        document.getElementById('uploadStatus').innerText = "Please select a PDF file.";
+        return;
+      }
+      
+      const file = fileInput.files[0];
+      // Implement file upload logic here (e.g., using fetch to send to your backend)
+      document.getElementById('uploadStatus').innerText = "PDF uploaded and processed successfully!";
+    });
+
+    // Handle sending chat messages
+    document.getElementById('sendBtn').addEventListener('click', function() {
+      const userInput = document.getElementById('chatInput').value;
+      if (userInput.trim() === "") return;
+
+      const chatBox = document.getElementById('chatBox');
+      const userMsg = document.createElement('div');
+      userMsg.innerText = "User: " + userInput;
+      chatBox.appendChild(userMsg);
+      
+      // Send the query to your backend to process the answer (using fetch/async call)
+      // Here, we simulate a response for demonstration:
+      setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.innerText = "Chatbot: This is a simulated response.";
+        chatBox.appendChild(botMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 1000);
+
+      document.getElementById('chatInput').value = "";
+    });
+  </script>
+</body>
+</html>

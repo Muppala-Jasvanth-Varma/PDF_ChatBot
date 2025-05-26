@@ -5,8 +5,6 @@ import base64
 import io
 
 import os
-
-# Update imports for LangChain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -19,14 +17,12 @@ from langchain.prompts import PromptTemplate
 
 
 
-
 from datetime import datetime
 
 def get_pdf_text(pdf_docs):
-    """Extracts text from one or more uploaded PDFs."""
     text = ""
 
-    if isinstance(pdf_docs, list):  # Check if multiple PDFs are uploaded
+    if isinstance(pdf_docs, list):  
         for pdf_doc in pdf_docs:
             text += extract_pdf_text(pdf_doc) + "\n\n"
     else:  # Handle single PDF
@@ -36,7 +32,7 @@ def get_pdf_text(pdf_docs):
 
 def extract_pdf_text(pdf_doc):
     """Extracts text from a single PDF file-like object."""
-    pdf_reader = PdfReader(io.BytesIO(pdf_doc.read()))  # Convert to file-like object
+    pdf_reader = PdfReader(io.BytesIO(pdf_doc.read()))
     pdf_text = ""
 
     for page in pdf_reader.pages:
@@ -92,9 +88,7 @@ def user_input(user_question, model_name, api_key, pdf_docs, conversation_histor
         pdf_names = [pdf.name for pdf in pdf_docs] if pdf_docs else []
         conversation_history.append((user_question_output, response_output, model_name, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), ", ".join(pdf_names)))
 
-        # conversation_history.append((user_question_output, response_output, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), ", ".join(pdf_names)))
 
-    # Kullanıcının sorduğu soruyu ve cevabı bir banner olarak ekleyelim
     st.markdown(
         f"""
         <style>
@@ -146,8 +140,7 @@ def user_input(user_question, model_name, api_key, pdf_docs, conversation_histor
         """,
         unsafe_allow_html=True
     )
-            # <div class="info" style="margin-left: 20px;">Timestamp: {datetime.now()}</div>
-            # <div class="info" style="margin-left: 20px;">PDF Name: {", ".join(pdf_names)}</div>
+           
     if len(conversation_history) == 1:
         conversation_history = []
     elif len(conversation_history) > 1 :
@@ -171,13 +164,10 @@ def user_input(user_question, model_name, api_key, pdf_docs, conversation_histor
             """,
             unsafe_allow_html=True
         )
-                # <div class="info" style="margin-left: 20px;">Timestamp: {timestamp}</div>
-                # <div class="info" style="margin-left: 20px;">PDF Name: {pdf_name}</div>
 
     if len(st.session_state.conversation_history) > 0:
         df = pd.DataFrame(st.session_state.conversation_history, columns=["Question", "Answer", "Model", "Timestamp", "PDF Name"])
 
-        # df = pd.DataFrame(st.session_state.conversation_history, columns=["Question", "Answer", "Timestamp", "PDF Name"])
         csv = df.to_csv(index=False)
         b64 = base64.b64encode(csv.encode()).decode()  # Convert to base64
         href = f'<a href="data:file/csv;base64,{b64}" download="conversation_history.csv"><button>Download conversation history as CSV file</button></a>'
@@ -224,20 +214,19 @@ def main():
         clear_button = col1.button("Rerun")
 
         if reset_button:
-            st.session_state.conversation_history = []  # Clear conversation history
-            st.session_state.user_question = None  # Clear user question input 
+            st.session_state.conversation_history = []  
+            st.session_state.user_question = None  
             
             
-            api_key = None  # Reset Google API key
-            pdf_docs = None  # Reset PDF document
-            
+            api_key = None 
+            pdf_docs = None 
         else:
             if clear_button:
                 if 'user_question' in st.session_state:
                     st.warning("The previous query will be discarded.")
-                    st.session_state.user_question = ""  # Temizle
+                    st.session_state.user_question = ""  
                     if len(st.session_state.conversation_history) > 0:
-                        st.session_state.conversation_history.pop()  # Son sorguyu kaldır
+                        st.session_state.conversation_history.pop()  
                 else:
                     st.warning("The question in the input will be queried again.")
 
@@ -256,7 +245,7 @@ def main():
 
     if user_question:
         user_input(user_question, model_name, api_key, pdf_docs, st.session_state.conversation_history)
-        st.session_state.user_question = ""  # Clear user question input 
+        st.session_state.user_question = ""  
 
 if __name__ == "__main__":
     main()

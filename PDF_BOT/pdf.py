@@ -180,7 +180,7 @@ def main():
 
     if 'conversation_history' not in st.session_state:
         st.session_state.conversation_history = []
-    linkedin_profile_link = "www.linkedin.com/in/jasvanth-varma-muppala-275jb"
+    linkedin_profile_link = "https://www.linkedin.com/in/jasvanth-varma-muppala-275jb/"
     github_profile_link = "github.com/Muppala-Jasvanth-Varma"
 
     st.sidebar.markdown(

@@ -1,12 +1,12 @@
-# 📄 Resume Chatbot – AI-Powered PDF Q&A Web App
+# 📄 AI-Powered PDF Q&A Web
 
-An intelligent, open-access web application that allows users to upload a PDF resume and interact with it through natural language queries. This chatbot can answer questions like "What are the skills mentioned?" or "What is the name of the person in the resume?" using advanced NLP techniques.
+An intelligent, open-access web application that allows users to upload a PDF and interact with it through natural language queries. This chatbot can answer questions like "What are the skills mentioned?" or "What is the name of the person in the pdf?" using advanced NLP techniques.
 
 ---
 
 ## 🚀 Features
 
-- ✅ Upload a resume in PDF format
+- ✅ Upload a pdf
 - ✅ Ask context-aware questions about the uploaded resume
 - ✅ Get instant and accurate answers using AI
 - ✅ Built with **LangChain**, **FAISS**, and **Google AI Models**

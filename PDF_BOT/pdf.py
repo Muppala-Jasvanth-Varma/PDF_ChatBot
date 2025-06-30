@@ -180,13 +180,11 @@ def main():
 
     if 'conversation_history' not in st.session_state:
         st.session_state.conversation_history = []
-    linkedin_profile_link = "https://www.linkedin.com/in/snsupratim/"
-    kaggle_profile_link = "https://www.kaggle.com/snsupratim/"
-    github_profile_link = "https://github.com/snsupratim/"
+    linkedin_profile_link = "www.linkedin.com/in/jasvanth-varma-muppala-275jb"
+    github_profile_link = "github.com/Muppala-Jasvanth-Varma"
 
     st.sidebar.markdown(
         f"[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)]({linkedin_profile_link}) "
-        f"[![Kaggle](https://img.shields.io/badge/Kaggle-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white)]({kaggle_profile_link}) "
         f"[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)]({github_profile_link})"
     )
 

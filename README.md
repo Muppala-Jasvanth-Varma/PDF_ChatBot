@@ -24,7 +24,7 @@ An intelligent, open-access web application that allows users to upload a PDF an
 | NLP Engine   | LangChain + Google PaLM / Gemini Pro     |
 | Vector DB    | FAISS (for semantic search)              |
 | PDF Parsing  | PyPDF2 / pdfplumber                      |
-| Hosting (Optional) | Render / Vercel / GitHub Pages + Backend on Replit/Render |
+| Hosting  | |   Streamlit
 
 ---
 

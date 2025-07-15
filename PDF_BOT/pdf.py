@@ -8,7 +8,6 @@ import re
 
 import os
 
-# Update imports for LangChain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -25,10 +24,9 @@ def get_pdf_text(pdf_docs):
     """Extracts text from one or more uploaded PDFs with enhanced error handling."""
     text = ""
 
-    if isinstance(pdf_docs, list):  # Check if multiple PDFs are uploaded
+    if isinstance(pdf_docs, list):  
         for pdf_doc in pdf_docs:
             try:
-                # Validate file
                 if pdf_doc.size == 0:
                     st.warning(f"Skipping empty file: {pdf_doc.name}")
                     continue
@@ -47,7 +45,7 @@ def get_pdf_text(pdf_docs):
             except Exception as e:
                 st.error(f"Error processing {pdf_doc.name}: {str(e)}")
                 continue
-    else:  # Handle single PDF
+    else: 
         try:
             if pdf_docs.size == 0:
                 st.error("Uploaded file is empty")
@@ -64,10 +62,8 @@ def extract_pdf_text(pdf_doc):
     """Extracts text from a single PDF file-like object with multiple fallback methods."""
     pdf_text = ""
     
-    # Reset file pointer to beginning
     pdf_doc.seek(0)
     
-    # Method 1: Try PyPDF2 with strict=False
     try:
         pdf_reader = PdfReader(io.BytesIO(pdf_doc.read()), strict=False)
         for page in pdf_reader.pages:
@@ -82,12 +78,10 @@ def extract_pdf_text(pdf_doc):
         st.warning(f"PyPDF2 failed with error: {str(e)}. Trying alternative method...")
         pdf_doc.seek(0)
     
-    # Method 2: Try PyPDF2 with different approach
     try:
         pdf_bytes = pdf_doc.read()
         pdf_doc.seek(0)
         
-        # Try to repair the PDF by reading it differently
         pdf_reader = PdfReader(io.BytesIO(pdf_bytes))
         for page_num, page in enumerate(pdf_reader.pages):
             try:
@@ -129,14 +123,12 @@ def classify_question_type(question):
     Classify if the question requires RAG (document-specific) or general AI knowledge
     """
     
-    # Keywords that indicate document-specific questions (RAG)
     rag_keywords = [
         'what', 'who', 'when', 'where', 'which', 'how many', 'list', 'mention', 'state', 'according to',
         'in the document', 'in the pdf', 'in the resume', 'in the report', 'based on the document',
         'extract', 'find', 'show', 'display', 'quote', 'cite', 'reference'
     ]
     
-    # Keywords that indicate analysis/general AI questions
     analysis_keywords = [
         'analyze', 'evaluate', 'assess', 'rate', 'score', 'suggest', 'recommend', 'improve', 'optimize',
         'predict', 'estimate', 'compare', 'contrast', 'pros and cons', 'advantages', 'disadvantages',
@@ -146,17 +138,14 @@ def classify_question_type(question):
     
     question_lower = question.lower()
     
-    # Check for analysis keywords first (these take priority)
     for keyword in analysis_keywords:
         if keyword in question_lower:
-            return "hybrid"  # Use both document context and AI knowledge
+            return "hybrid"  
     
-    # Check for RAG keywords
     for keyword in rag_keywords:
         if keyword in question_lower:
-            return "rag"  # Use document retrieval
+            return "rag" 
     
-    # Default to hybrid for ambiguous cases
     return "hybrid"
 
 def get_rag_chain(model_name, api_key=None):
@@ -213,16 +202,12 @@ def user_input(user_question, model_name, api_key, pdf_docs, conversation_histor
         return
     
     try:
-        # Classify question type
         question_type = classify_question_type(user_question)
         
-        # Initialize response variables
         user_question_output = user_question
         response_output = ""
         
-        # Handle questions when PDFs are uploaded
         if pdf_docs is not None and len(pdf_docs) > 0:
-            # Extract text with enhanced error handling
             pdf_text = get_pdf_text(pdf_docs)
             
             if not pdf_text.strip():
@@ -235,7 +220,6 @@ def user_input(user_question, model_name, api_key, pdf_docs, conversation_histor
                 st.error("No text chunks could be created. The PDF might be empty or corrupted.")
                 return
             
-            # Create vector store
             vector_store = get_vector_store(text_chunks, model_name, api_key)
             
             if model_name == "Google AI":
@@ -244,28 +228,23 @@ def user_input(user_question, model_name, api_key, pdf_docs, conversation_histor
                 docs = new_db.similarity_search(user_question)
                 
                 if question_type == "rag":
-                    # Use traditional RAG for document-specific questions
                     chain = get_rag_chain(model_name, api_key)
                     response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
                     response_output = response['output_text']
                     
                 elif question_type == "hybrid":
-                    # Use hybrid approach for analysis questions
                     chain = get_hybrid_chain(model_name, api_key)
                     response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
                     response_output = response['output_text']
         
         else:
-            # No PDFs uploaded - use general AI
             if model_name == "Google AI":
                 model = get_general_chain(model_name, api_key)
                 response_output = model.invoke(user_question).content
         
-        # Add to conversation history
         pdf_names = [pdf.name for pdf in pdf_docs] if pdf_docs else ["No PDF uploaded"]
         conversation_history.append((user_question_output, response_output, model_name, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), ", ".join(pdf_names)))
 
-        # Display current conversation
         st.markdown(
             f"""
             <style>
@@ -325,7 +304,6 @@ def user_input(user_question, model_name, api_key, pdf_docs, conversation_histor
             unsafe_allow_html=True
         )
         
-        # Display conversation history
         if len(conversation_history) == 1:
             conversation_history = []
         elif len(conversation_history) > 1:
